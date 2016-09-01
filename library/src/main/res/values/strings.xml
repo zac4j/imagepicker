@@ -1,3 +1,9 @@
 <resources>
-  <string name="app_name">" Library"</string>
+  <string name="app_name">Gallery</string>
+  <string name="photo">photo</string>
+  <string name="illegal_select_item">MUST SET EXTRA_SELECT_NUM VALUE!</string>
+  <string name="complete">COMPLETE</string>
+  <string name="ok">OK</string>
+  <string name="upload">UPLOAD</string>
+  <string name="gallery_item_image_holder">ImageHolder</string>
 </resources>

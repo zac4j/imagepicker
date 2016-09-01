@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/gallery_item_fr_container"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:padding="@dimen/space.divider"
+    android:background="@drawable/bg_photo_nor"
+    >
+  <ImageView
+      android:id="@id/gallery_item_iv_photo"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:contentDescription="@string/gallery_item_image_holder"
+      />
+</FrameLayout>
