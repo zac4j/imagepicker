@@ -1,5 +1,6 @@
 package com.zac4j.imagepicker.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import com.zac4j.imagepicker.ui.widget.PhotoItemDecoration;
 import com.zac4j.imagepicker.util.RxUtils;
 import java.util.ArrayList;
 import java.util.List;
+import rx.Subscription;
 import rx.functions.Action1;
 
 /**
@@ -28,7 +30,9 @@ import rx.functions.Action1;
 public class GalleryActivity extends AppCompatActivity {
 
   public static final String EXTRA_SELECT_NUM = "extra_select_num";
+  public static final String EXTRA_IMAGE_CONTAINER = "extra_images_container";
 
+  private Subscription mSubscription;
   private GalleryAdapter mAdapter;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +62,7 @@ public class GalleryActivity extends AppCompatActivity {
     mAdapter.setSelectItemLimit(selectNum);
     photosView.setAdapter(mAdapter);
 
-    PhotoTask.getPhotoList(getContentResolver())
+    mSubscription = PhotoTask.getPhotoList(getContentResolver())
         .compose(RxUtils.<List<Photo>>applyScheduler())
         .subscribe(new Action1<List<Photo>>() {
           @Override public void call(List<Photo> photos) {
@@ -73,7 +77,10 @@ public class GalleryActivity extends AppCompatActivity {
           Toast.makeText(GalleryActivity.this, "Haven't select image yet!", Toast.LENGTH_SHORT)
               .show();
         } else {
-          // TODO select photo accomplish
+          String[] imageContainer = photos.toArray(new String[0]);
+          Intent intent = getIntent().putExtra(EXTRA_IMAGE_CONTAINER, imageContainer);
+          setResult(RESULT_OK, intent);
+          GalleryActivity.this.finish();
         }
       }
     });
@@ -86,5 +93,10 @@ public class GalleryActivity extends AppCompatActivity {
         break;
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    RxUtils.unsubscribe(mSubscription);
   }
 }

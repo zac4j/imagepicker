@@ -1,6 +1,7 @@
 <resources>
   <string name="app_name">Gallery</string>
   <string name="photo">photo</string>
+  <string name="unset_image_container">MUST SET IMAGE CONTAINER!</string>
   <string name="illegal_select_item">MUST SET EXTRA_SELECT_NUM VALUE!</string>
   <string name="complete">COMPLETE</string>
   <string name="ok">OK</string>
