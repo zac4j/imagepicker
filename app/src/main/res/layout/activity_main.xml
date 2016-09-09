@@ -5,6 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:gravity="center"
     tools:context="com.zac4j.imagepicker.sample.MainActivity"
     >
@@ -16,5 +17,10 @@
       android:onClick="selectPhoto"
       style="@style/Widget.AppCompat.Button.Colored"
       />
-
+  <TextView
+      android:id="@+id/images"
+      android:layout_marginTop="@dimen/space.medium"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      />
 </LinearLayout>

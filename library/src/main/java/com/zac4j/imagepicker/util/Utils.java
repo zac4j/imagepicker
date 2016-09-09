@@ -13,12 +13,13 @@ import java.io.IOException;
 public class Utils {
 
   public static void close(Closeable closeable) {
-    if (closeable != null) {
-      try {
-        closeable.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+    if (closeable == null) {
+      return;
+    }
+    try {
+      closeable.close();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
@@ -41,5 +42,4 @@ public class Utils {
   public static String urlFromFile(String filePath) {
     return String.format("%s%s", "file://", filePath);
   }
-
 }
