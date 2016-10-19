@@ -12,4 +12,5 @@
   <item name="gallery_image_container" type="id"/>
   <item name="button1" type="id"/>
   <item name="button2" type="id"/>
+  <item name="gallery_no_photo" type="id"/>
 </resources>

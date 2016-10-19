@@ -13,7 +13,16 @@
       android:layout_above="@id/gallery_item_btn_complete"
       android:layout_marginTop="?android:attr/actionBarSize"
       />
-
+  <TextView
+      android:id="@id/gallery_no_photo"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:gravity="center_horizontal"
+      android:text="@string/error_no_photo_found"
+      android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+      android:visibility="gone"
+      />
   <Button
       android:id="@id/gallery_item_btn_complete"
       android:layout_width="match_parent"

@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.zac4j.imagepicker.R;
 import com.zac4j.imagepicker.adapter.GalleryAdapter;
@@ -46,7 +47,8 @@ public class GalleryActivity extends AppCompatActivity {
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     RecyclerView photosView = (RecyclerView) findViewById(R.id.gallery_rv_photos);
-    Button button = (Button) findViewById(R.id.gallery_item_btn_complete);
+    final Button button = (Button) findViewById(R.id.gallery_item_btn_complete);
+    final TextView noPhotoView = (TextView) findViewById(R.id.gallery_no_photo);
 
     setSupportActionBar(toolbar);
     if (getSupportActionBar() != null) {
@@ -66,7 +68,12 @@ public class GalleryActivity extends AppCompatActivity {
         .compose(RxUtils.<List<Photo>>applyScheduler())
         .subscribe(new Action1<List<Photo>>() {
           @Override public void call(List<Photo> photos) {
-            mAdapter.addAll(photos);
+            if (photos == null || photos.isEmpty()) {
+              noPhotoView.setVisibility(View.VISIBLE);
+              button.setVisibility(View.GONE);
+            } else {
+              mAdapter.addAll(photos);
+            }
           }
         });
 

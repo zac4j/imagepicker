@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="error_unselect_image_item">UnSelected image item</string>
+  <string name="error_no_photo_found">NO PHOTO FOUND</string>
 </resources>

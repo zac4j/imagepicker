@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
+    android:id="@id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -18,7 +18,7 @@
       style="@style/Widget.AppCompat.Button.Colored"
       />
   <TextView
-      android:id="@+id/images"
+      android:id="@id/image_list"
       android:layout_marginTop="@dimen/space.medium"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
