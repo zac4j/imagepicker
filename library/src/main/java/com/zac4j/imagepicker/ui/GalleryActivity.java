@@ -1,6 +1,5 @@
 package com.zac4j.imagepicker.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,9 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.zac4j.imagepicker.ImageLoader;
+import com.zac4j.imagepicker.PickerListener;
 import com.zac4j.imagepicker.R;
 import com.zac4j.imagepicker.adapter.GalleryAdapter;
 import com.zac4j.imagepicker.model.Photo;
@@ -31,7 +31,8 @@ import rx.functions.Action1;
 public class GalleryActivity extends AppCompatActivity {
 
   public static final String EXTRA_SELECT_NUM = "extra_select_num";
-  public static final String EXTRA_IMAGE_CONTAINER = "extra_images_container";
+  public static final String EXTRA_IMAGE_LOADER = "extra_image_loader";
+  public static final String EXTRA_PICKER_LISTENER = "extra_picker_listener";
 
   private Subscription mSubscription;
   private GalleryAdapter mAdapter;
@@ -41,13 +42,14 @@ public class GalleryActivity extends AppCompatActivity {
     setContentView(R.layout.activity_gallery);
 
     final int selectNum = getIntent().getIntExtra(EXTRA_SELECT_NUM, 0);
-    if (selectNum == 0) {
-      throw new IllegalArgumentException(getString(R.string.illegal_select_item));
-    }
+    final ImageLoader imageLoader =
+        (ImageLoader) getIntent().getSerializableExtra(EXTRA_IMAGE_LOADER);
+    final PickerListener pickerListener =
+        (PickerListener) getIntent().getSerializableExtra(EXTRA_PICKER_LISTENER);
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     RecyclerView photosView = (RecyclerView) findViewById(R.id.gallery_rv_photos);
-    final Button button = (Button) findViewById(R.id.gallery_item_btn_complete);
+    final TextView button = (TextView) toolbar.findViewById(R.id.gallery_tv_select_complete);
     final TextView noPhotoView = (TextView) findViewById(R.id.gallery_no_photo);
 
     setSupportActionBar(toolbar);
@@ -62,6 +64,7 @@ public class GalleryActivity extends AppCompatActivity {
 
     mAdapter = new GalleryAdapter(GalleryActivity.this, new ArrayList<Photo>());
     mAdapter.setSelectItemLimit(selectNum);
+    mAdapter.setImageLoader(imageLoader);
     photosView.setAdapter(mAdapter);
 
     mSubscription = PhotoTask.getPhotoList(getContentResolver())
@@ -79,14 +82,12 @@ public class GalleryActivity extends AppCompatActivity {
 
     button.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
-        ArrayList<String> photos = mAdapter.getSelectItemSet();
+        List<String> photos = mAdapter.getSelectItemSet();
         if (photos == null || photos.isEmpty()) {
           Toast.makeText(GalleryActivity.this, "Haven't select image yet!", Toast.LENGTH_SHORT)
               .show();
         } else {
-          String[] imageContainer = photos.toArray(new String[0]);
-          Intent intent = getIntent().putExtra(EXTRA_IMAGE_CONTAINER, imageContainer);
-          setResult(RESULT_OK, intent);
+          pickerListener.onPickComplete(photos);
           GalleryActivity.this.finish();
         }
       }

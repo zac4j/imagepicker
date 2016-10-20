@@ -8,9 +8,9 @@
   <item name="gallery_item_iv_photo" type="id" />
   <item name="gallery_item_fr_container" type="id" />
   <item name="gallery_item_tv_name" type="id" />
-  <item name="gallery_item_btn_complete" type="id" />
   <item name="gallery_image_container" type="id"/>
   <item name="button1" type="id"/>
   <item name="button2" type="id"/>
   <item name="gallery_no_photo" type="id"/>
+  <item name="gallery_tv_select_complete" type="id"/>
 </resources>

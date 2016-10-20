@@ -10,7 +10,6 @@
       android:id="@id/gallery_rv_photos"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_above="@id/gallery_item_btn_complete"
       android:layout_marginTop="?android:attr/actionBarSize"
       />
   <TextView
@@ -22,14 +21,6 @@
       android:text="@string/error_no_photo_found"
       android:textAppearance="@style/TextAppearance.AppCompat.Medium"
       android:visibility="gone"
-      />
-  <Button
-      android:id="@id/gallery_item_btn_complete"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:text="@string/ok"
-      style="@style/Widget.AppCompat.Button.Colored"
       />
 
 </RelativeLayout>

@@ -15,7 +15,19 @@
         android:layout_height="?android:attr/actionBarSize"
         app:layout_scrollFlags="scroll|enterAlways|snap"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        />
+        >
+
+      <TextView
+          android:id="@id/gallery_tv_select_complete"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end"
+          android:padding="@dimen/space.medium"
+          android:text="@string/ok"
+          android:textColor="@color/white"
+          />
+
+    </android.support.v7.widget.Toolbar>
 
   </android.support.design.widget.AppBarLayout>
 </merge>
