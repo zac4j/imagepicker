@@ -1,6 +1,6 @@
 package com.zac4j.imagepicker;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.zac4j.imagepicker.ui.GalleryActivity;
@@ -12,39 +12,40 @@ import com.zac4j.imagepicker.ui.GalleryActivity;
 
 public class ImagePicker {
 
-  public static ImagePicker with(@NonNull Context context) {
-    if (context == null) { // 为了防止瞎子
+  public static final String DATA = "extra_data";
+
+  public static Builder with(@NonNull Activity activity) {
+    if (activity == null) { // 为了防止瞎子
       throw new IllegalArgumentException("context == null");
     }
-    return new Builder(context).build();
+    return new Builder(activity);
   }
 
-  public ImagePicker(Context context, PickerListener pickerListener, ImageLoader imageLoader,
+  public ImagePicker(Activity activity, ImageLoader imageLoader, int requestCode,
       int selectNumber) {
-    startGalleryActivity(context, pickerListener, imageLoader, selectNumber);
+    startGalleryActivity(activity, imageLoader, requestCode, selectNumber);
   }
 
-  private void startGalleryActivity(Context context, PickerListener pickerListener,
-      ImageLoader imageLoader, int selectNumber) {
-    Intent intent = new Intent(context, GalleryActivity.class);
-    // FIXME: 16-10-21
-    intent.putExtra(GalleryActivity.EXTRA_PICKER_LISTENER, pickerListener);
+  private void startGalleryActivity(Activity activity, ImageLoader imageLoader, int requestCode,
+      int selectNumber) {
+    Intent intent = new Intent(activity, GalleryActivity.class);
     intent.putExtra(GalleryActivity.EXTRA_IMAGE_LOADER, imageLoader);
     intent.putExtra(GalleryActivity.EXTRA_SELECT_NUM, selectNumber);
-    context.startActivity(intent);
+
+    activity.startActivityForResult(intent, requestCode);
   }
 
   public static class Builder {
-    private final Context context;
-    private PickerListener pickerListener;
+    private final Activity activity;
     private ImageLoader imageLoader;
+    private int requestCode;
     private int selectNumber;
 
-    public Builder(@NonNull Context context) {
-      if (context == null) { // 为了防止瞎子
+    public Builder(@NonNull Activity activity) {
+      if (activity == null) { // 为了防止瞎子
         throw new IllegalArgumentException("context == null");
       }
-      this.context = context;
+      this.activity = activity;
     }
 
     public Builder engine(ImageLoader imageLoader) {
@@ -55,11 +56,11 @@ public class ImagePicker {
       return this;
     }
 
-    public Builder listener(PickerListener pickerListener) {
-      if (pickerListener == null) {
+    public Builder code(int requestCode) {
+      if (requestCode <= 0) {
         throw new IllegalArgumentException("Picker Listener must not be null.");
       }
-      this.pickerListener = pickerListener;
+      this.requestCode = requestCode;
       return this;
     }
 
@@ -72,21 +73,20 @@ public class ImagePicker {
     }
 
     public ImagePicker build() {
-      Context context = this.context;
 
       if (imageLoader == null) {
         throw new IllegalStateException("ImageLoader must not be null.");
       }
 
-      if (pickerListener == null) {
-        throw new IllegalStateException("PickerListener must not be null.");
+      if (requestCode <= 0) {
+        throw new IllegalStateException("Request code must has a validate value.");
       }
 
       if (selectNumber <= 0) {
-        throw new IllegalStateException("select number must has a validate value.");
+        throw new IllegalStateException("Select number must has a validate value.");
       }
 
-      return new ImagePicker(context, pickerListener, imageLoader, selectNumber);
+      return new ImagePicker(activity, imageLoader, requestCode, selectNumber);
     }
   }
 }

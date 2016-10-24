@@ -1,5 +1,6 @@
 package com.zac4j.imagepicker.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.zac4j.imagepicker.ImageLoader;
-import com.zac4j.imagepicker.PickerListener;
+import com.zac4j.imagepicker.ImagePicker;
 import com.zac4j.imagepicker.R;
 import com.zac4j.imagepicker.adapter.GalleryAdapter;
 import com.zac4j.imagepicker.model.Photo;
@@ -32,7 +33,6 @@ public class GalleryActivity extends AppCompatActivity {
 
   public static final String EXTRA_SELECT_NUM = "extra_select_num";
   public static final String EXTRA_IMAGE_LOADER = "extra_image_loader";
-  public static final String EXTRA_PICKER_LISTENER = "extra_picker_listener";
 
   private Subscription mSubscription;
   private GalleryAdapter mAdapter;
@@ -44,8 +44,6 @@ public class GalleryActivity extends AppCompatActivity {
     final int selectNum = getIntent().getIntExtra(EXTRA_SELECT_NUM, 0);
     final ImageLoader imageLoader =
         (ImageLoader) getIntent().getSerializableExtra(EXTRA_IMAGE_LOADER);
-    final PickerListener pickerListener =
-        (PickerListener) getIntent().getSerializableExtra(EXTRA_PICKER_LISTENER);
 
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     RecyclerView photosView = (RecyclerView) findViewById(R.id.gallery_rv_photos);
@@ -82,12 +80,14 @@ public class GalleryActivity extends AppCompatActivity {
 
     button.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
-        List<String> photos = mAdapter.getSelectItemSet();
+        ArrayList<String> photos = mAdapter.getSelectItemSet();
         if (photos == null || photos.isEmpty()) {
           Toast.makeText(GalleryActivity.this, "Haven't select image yet!", Toast.LENGTH_SHORT)
               .show();
         } else {
-          pickerListener.onPickComplete(photos);
+          Intent intent = new Intent();
+          intent.putStringArrayListExtra(ImagePicker.DATA, photos);
+          setResult(RESULT_OK, intent);
           GalleryActivity.this.finish();
         }
       }

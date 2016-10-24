@@ -1,18 +1,20 @@
 # ImagePicker
-> A library help to support multiple selection image from phone gallery
+> A library for picking lots of image from Android gallery.
 
-Android OS provides select multiple images only available in Android API 18 and higher, and the invoke api likes this:
+Android OS provides select multiple images only available in Android API 18++, and the invoke api likes this:
 ```java
+private static final int REQUEST_IMAGES_CODE = 0xaa;
+
 Intent intent = new Intent();
 intent.setType("image/*");
 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 intent.setAction(Intent.ACTION_GET_CONTENT);
-startActivityForResult(Intent.createChooser(intent,"Select Picture"), 1);
+startActivityForResult(Intent.createChooser(intent,"Select Picture"), REQUEST_IMAGES_CODE);
 ```
 
-If you want to support `minSdkVersion` lower than API 18, **ImagePicker** may be helpful.
+If you want to support `minSdkVersion` API 18--, **ImagePicker** should be helpful.
 
-### Usage:
+### Main Usage:
 
 ```xml
 <LinearLayout
@@ -38,16 +40,21 @@ If you want to support `minSdkVersion` lower than API 18, **ImagePicker** may be
 Java Code:
 
 ```java
-private static final String TAG = "MainActivity";
-private static final int REQUEST_IMAGES_CODE = 0x110;
+public class MainActivity extends AppCompatActivity {
+  private static final String TAG = "MainActivity";
 
-  // Select 3 photos from gallery
+  // Request code for start image picker activity.
+  private static final int REQUEST_IMAGES_CODE = 0xaa;
+
+  // Set default number of photo to select.
   private static final int SELECT_PHOTO_NUM = 3;
 
-  public void selectPhoto(View view) {
-    Intent intent = new Intent(this, GalleryActivity.class);
-    intent.putExtra(GalleryActivity.EXTRA_SELECT_NUM, SELECT_PHOTO_NUM);
-    startActivityForResult(intent, REQUEST_IMAGES_CODE);
+  private void startPicker() {
+    ImagePicker.with(this)
+      .engine(ImageLoader.GLIDE) // Set load image engine as Glide, or Picasso
+      .number(SELECT_PHOTO_NUM) // Set select number for picking photo
+      .code(REQUEST_IMAGES_CODE) // Set request code for retrieving data
+      .build();
   }
 
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -55,9 +62,9 @@ private static final int REQUEST_IMAGES_CODE = 0x110;
       return;
     }
 
-    String[] images = data.getStringArrayExtra(GalleryActivity.EXTRA_IMAGE_CONTAINER);
+    List<String> images = data.getStringArrayListExtra(ImagePicker.DATA);
 
-    if (images == null || images.length == 0) {
+    if (images == null || images.isEmpty()) {
       return;
     }
 
@@ -65,7 +72,8 @@ private static final int REQUEST_IMAGES_CODE = 0x110;
     for (String image : images) {
       showText += image + "\n";
     }
-    Log.i(TAG, "select image addresses: " + showText);
+
+    mTextView.setText(showText);
   }
 }
 ```

@@ -3,6 +3,7 @@ package com.zac4j.imagepicker.sample;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,14 +15,17 @@ import android.view.View;
 import android.widget.TextView;
 import com.zac4j.imagepicker.ImageLoader;
 import com.zac4j.imagepicker.ImagePicker;
-import com.zac4j.imagepicker.PickerListener;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements PickerListener {
+public class MainActivity extends AppCompatActivity {
 
-  private static final int REQUEST_STORAGE_PERMISSION_CODE = 0xff;
+  // Request code for start image picker activity.
+  private static final int REQUEST_IMAGES_CODE = 0xaa;
 
-  // Set select 3 photos from gallery
+  // Request code for request storage permission.
+  private static final int REQUEST_STORAGE_PERMISSION = 0xbb;
+
+  // Set default number of photo to select.
   private static final int SELECT_PHOTO_NUM = 3;
 
   private TextView mTextView;
@@ -38,16 +42,10 @@ public class MainActivity extends AppCompatActivity implements PickerListener {
     checkStoragePermission(MainActivity.this);
   }
 
-  //private void startGalleryActivity() {
-  //  Intent intent = new Intent(this, GalleryActivity.class);
-  //  intent.putExtra(GalleryActivity.EXTRA_SELECT_NUM, SELECT_PHOTO_NUM);
-  //  startActivityForResult(intent, REQUEST_IMAGES_CODE);
-  //}
-
   private void startPicker() {
-    ImagePicker imagePicker = new ImagePicker.Builder(this).engine(ImageLoader.GLIDE)
-        .number(SELECT_PHOTO_NUM)
-        .listener(this)
+    ImagePicker.with(this).engine(ImageLoader.GLIDE) // Set load image engine as Glide, or Picasso
+        .number(SELECT_PHOTO_NUM) // Set select number for picking photo
+        .code(REQUEST_IMAGES_CODE) // Set request code for retrieving data
         .build();
   }
 
@@ -56,8 +54,7 @@ public class MainActivity extends AppCompatActivity implements PickerListener {
       startPicker();
     } else {
       ActivityCompat.requestPermissions(activity,
-          new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
-          REQUEST_STORAGE_PERMISSION_CODE);
+          new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, REQUEST_STORAGE_PERMISSION);
     }
   }
 
@@ -82,28 +79,19 @@ public class MainActivity extends AppCompatActivity implements PickerListener {
         == PackageManager.PERMISSION_GRANTED;
   }
 
-  //@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-  //  if (requestCode != REQUEST_IMAGES_CODE || resultCode != RESULT_OK || data == null) {
-  //    return;
-  //  }
-  //
-  //  String[] images = data.getStringArrayExtra(GalleryActivity.EXTRA_IMAGE_CONTAINER);
-  //
-  //  if (images == null || images.length == 0) {
-  //    return;
-  //  }
-  //
-  //  String showText = "";
-  //  for (String image : images) {
-  //    showText += image + "\n";
-  //  }
-  //
-  //  mTextView.setText(showText);
-  //}
+  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode != REQUEST_IMAGES_CODE || resultCode != RESULT_OK || data == null) {
+      return;
+    }
 
-  @Override public void onPickComplete(List<String> photoList) {
+    List<String> images = data.getStringArrayListExtra(ImagePicker.DATA);
+
+    if (images == null || images.isEmpty()) {
+      return;
+    }
+
     String showText = "";
-    for (String image : photoList) {
+    for (String image : images) {
       showText += image + "\n";
     }
 

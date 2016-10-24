@@ -9,6 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.zac4j.imagepicker.ImageLoader;
 import com.zac4j.imagepicker.R;
@@ -55,6 +57,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageHol
     if (mImageLoader == ImageLoader.GLIDE) {
       Glide.with(mContext)
           .load(file)
+          .skipMemoryCache(true)
+          .diskCacheStrategy(DiskCacheStrategy.NONE)
           .centerCrop()
           .placeholder(R.color.white)
           .crossFade()
@@ -62,6 +66,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageHol
     } else if (mImageLoader == ImageLoader.PICASSO) {
       Picasso.with(mContext)
           .load(file)
+          .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
           .centerCrop()
           .placeholder(R.color.white)
           .into(holder.mImageView);
