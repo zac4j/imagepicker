@@ -1,9 +1,13 @@
 package com.zac4j.imagepicker.util;
 
-import rx.Single;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeSource;
+import io.reactivex.MaybeTransformer;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * RxJava Helper Utilities
@@ -13,26 +17,24 @@ import rx.schedulers.Schedulers;
 public class RxUtils {
 
   /**
-   * Apply Single object schedulers
+   * Apply Maybe Source schedulers
    *
    * @param <T> Single type
    * @return transformed Single object
    */
-  public static <T> Single.Transformer<T, T> applyScheduler() {
-    return new Single.Transformer<T, T>() {
-      @Override public Single<T> call(Single<T> tSingle) {
-        return tSingle.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+  public static <T> MaybeTransformer<T, T> applyMaybeScheduler() {
+    return new MaybeTransformer<T, T>() {
+      @Override public MaybeSource<T> apply(Maybe<T> upstream) {
+        return upstream.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
       }
     };
   }
 
-  /**
-   * Unsubscribe subscription
-   * @param subscription subscription to unsubscribe
-   */
-  public static void unsubscribe(Subscription subscription) {
-    if (subscription != null && !subscription.isUnsubscribed()) {
-      subscription.unsubscribe();
-    }
+  public static <T> ObservableTransformer<T, T> applyObservableScheduler() {
+    return new ObservableTransformer<T, T>() {
+      @Override public ObservableSource<T> apply(Observable<T> upstream) {
+        return upstream.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+      }
+    };
   }
 }

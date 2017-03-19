@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <item name="root_layout" type="id"/>
-  <item name="image_list" type="id"/>
+  <item name="main_root_layout" type="id"/>
+  <item name="main_capture_photo" type="id"/>
+  <item name="main_pick_photo" type="id"/>
+  <item name="main_photo_container" type="id"/>
+  <item name="main_image_list" type="id"/>
 </resources>

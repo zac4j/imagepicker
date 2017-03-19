@@ -19,10 +19,10 @@ import com.zac4j.imagepicker.model.Photo;
 import com.zac4j.imagepicker.task.PhotoTask;
 import com.zac4j.imagepicker.ui.widget.PhotoItemDecoration;
 import com.zac4j.imagepicker.util.RxUtils;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 import java.util.ArrayList;
 import java.util.List;
-import rx.Subscription;
-import rx.functions.Action1;
 
 /**
  * Gallery
@@ -34,7 +34,7 @@ public class GalleryActivity extends AppCompatActivity {
   public static final String EXTRA_SELECT_NUM = "extra_select_num";
   public static final String EXTRA_IMAGE_LOADER = "extra_image_loader";
 
-  private Subscription mSubscription;
+  private CompositeDisposable mDisposable;
   private GalleryAdapter mAdapter;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,10 +65,11 @@ public class GalleryActivity extends AppCompatActivity {
     mAdapter.setImageLoader(imageLoader);
     photosView.setAdapter(mAdapter);
 
-    mSubscription = PhotoTask.getPhotoList(getContentResolver())
-        .compose(RxUtils.<List<Photo>>applyScheduler())
-        .subscribe(new Action1<List<Photo>>() {
-          @Override public void call(List<Photo> photos) {
+    mDisposable = new CompositeDisposable();
+    mDisposable.add(PhotoTask.getPhotoList(getContentResolver())
+        .compose(RxUtils.<List<Photo>>applyObservableScheduler())
+        .subscribe(new Consumer<List<Photo>>() {
+          @Override public void accept(List<Photo> photos) throws Exception {
             if (photos == null || photos.isEmpty()) {
               noPhotoView.setVisibility(View.VISIBLE);
               button.setVisibility(View.GONE);
@@ -76,9 +77,23 @@ public class GalleryActivity extends AppCompatActivity {
               mAdapter.addAll(photos);
             }
           }
-        });
+        }));
 
-    button.setOnClickListener(new View.OnClickListener() {
+    //    new Action1<List<Photo>>() {
+    //  @Override public void call(List<Photo> photos) {
+    //    if (photos == null || photos.isEmpty()) {
+    //      noPhotoView.setVisibility(View.VISIBLE);
+    //      button.setVisibility(View.GONE);
+    //    } else {
+    //      mAdapter.addAll(photos);
+    //    }
+    //  }
+    //}
+    //);
+
+    button.setOnClickListener(new View.OnClickListener()
+
+    {
       @Override public void onClick(View view) {
         ArrayList<String> photos = mAdapter.getSelectItemSet();
         if (photos == null || photos.isEmpty()) {
@@ -104,7 +119,9 @@ public class GalleryActivity extends AppCompatActivity {
   }
 
   @Override protected void onDestroy() {
+    if (mDisposable != null) {
+      mDisposable.clear();
+    }
     super.onDestroy();
-    RxUtils.unsubscribe(mSubscription);
   }
 }

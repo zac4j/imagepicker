@@ -2,25 +2,40 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@id/root_layout"
+    android:id="@id/main_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
+    android:orientation="vertical"
     tools:context="com.zac4j.imagepicker.sample.MainActivity"
     >
 
+  <ImageView
+      android:id="@id/main_photo_container"
+      android:layout_width="@dimen/img_large"
+      android:layout_height="@dimen/img_large"
+      />
+
   <Button
+      android:id="@id/main_pick_photo"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@string/select_photo"
-      android:onClick="selectPhoto"
+      android:text="@string/pick_photo"
       style="@style/Widget.AppCompat.Button.Colored"
       />
+
+  <Button
+      android:id="@id/main_capture_photo"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/capture_photo"
+      style="@style/Widget.AppCompat.Button.Colored"
+      />
+
   <TextView
-      android:id="@id/image_list"
-      android:layout_marginTop="@dimen/space.medium"
+      android:id="@id/main_image_list"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/space.medium"
       />
 </LinearLayout>

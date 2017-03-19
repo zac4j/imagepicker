@@ -7,11 +7,11 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import com.zac4j.imagepicker.model.Photo;
 import com.zac4j.imagepicker.util.Utils;
+import io.reactivex.Observable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import rx.Single;
 
 /**
  * Show gallery photo list task
@@ -20,11 +20,11 @@ import rx.Single;
 
 public class PhotoTask {
 
-  public static Single<List<Photo>> getPhotoList(final ContentResolver resolver) {
-    return Single.defer(new Callable<Single<List<Photo>>>() {
-      @Override public Single<List<Photo>> call() throws Exception {
+  public static Observable<List<Photo>> getPhotoList(final ContentResolver resolver) {
+    return Observable.defer(new Callable<Observable<? extends List<Photo>>>() {
+      @Override public Observable<? extends List<Photo>> call() throws Exception {
         List<Photo> photoList = getPhotoPathList(resolver);
-        return Single.just(photoList);
+        return Observable.just(photoList);
       }
     });
   }
